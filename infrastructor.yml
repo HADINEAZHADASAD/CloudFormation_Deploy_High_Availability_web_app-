@@ -196,14 +196,7 @@ Resources:
         Properties:
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
-    
-    ProfileWithRolesForOurApp:
-        Type: AWS::IAM::InstanceProfile
-        Properties:
-            Path: "/"
-            Roles:
-            - Ref: UdacityS3ReadOnlyEC2
-
+   
     LoadBalancerSecGroup:
             Type: AWS::EC2::SecurityGroup
             Properties:
