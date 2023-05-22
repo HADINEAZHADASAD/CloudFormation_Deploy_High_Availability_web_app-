@@ -247,7 +247,6 @@ Resources:
                     aws s3 cp s3://udacity-demo-1/udacity.zip .
                     unzip -o udacity.zip
             ImageId: ami-03f65b8614a860c29
-            KeyName: UdacityLondonKP
             SecurityGroups:
             -   Ref: WebServerSecGroup
             InstanceType: !Ref 'InstanceType'
