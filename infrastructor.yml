@@ -233,24 +233,24 @@ Resources:
                 ToPort: 65535
                 CidrIp: 0.0.0.0/0
 
-    MyLaunchTemplate: 
+     MyLaunchTemplate: 
         Type: AWS::EC2::LaunchTemplate
         Properties:
-          LaunchTemplateName: MyLaunchTemplate
-            UserData:
-                Fn::Base64: !Sub |
-                    #!/bin/bash
-                    sudo apt-get update -y
-                    sudo apt-get install apache2 -y
-                    sudo systemctl start apache2.service 
-            ImageId: ami-03f65b8614a860c29
-            SecurityGroupIds:
-            -   Ref: WebServerSecGroup
-            InstanceType: !Ref 'InstanceType'
-            BlockDeviceMappings:
-            -   DeviceName: "/dev/sdk"
-                Ebs:
-                    VolumeSize: '10' #10GB
+            LaunchTemplateName: MyLaunchTemplate
+                UserData:
+                    Fn::Base64: !Sub |
+                        #!/bin/bash
+                        sudo apt-get update -y
+                        sudo apt-get install apache2 -y
+                        sudo systemctl start apache2.service 
+                ImageId: ami-03f65b8614a860c29
+                SecurityGroupIds:
+                -   Ref: WebServerSecGroup
+                InstanceType: !Ref 'InstanceType'
+                BlockDeviceMappings:
+                -   DeviceName: "/dev/sdk"
+                    Ebs:
+                        VolumeSize: '10' #10GB
 
     WebAppTargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
