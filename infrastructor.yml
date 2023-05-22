@@ -236,6 +236,8 @@ Resources:
     MyLaunchTemplate: 
         Type: AWS::EC2::LaunchTemplate
         Properties:
+        LaunchTemplateName: MyLaunchTemplate
+        LaunchTemplateData:
             UserData:
                 Fn::Base64: !Sub |
                     #!/bin/bash
@@ -243,7 +245,7 @@ Resources:
                     sudo apt-get install apache2 -y
                     sudo systemctl start apache2.service 
             ImageId: ami-03f65b8614a860c29
-            SecurityGroups:
+            SecurityGroupIds:
             -   Ref: WebServerSecGroup
             InstanceType: !Ref 'InstanceType'
             BlockDeviceMappings:
