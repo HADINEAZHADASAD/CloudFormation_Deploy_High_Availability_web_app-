@@ -271,7 +271,7 @@ Resources:
             - !Ref PrivateSubnet1
             - !Ref PrivateSubnet2 
             LaunchConfigurationName:
-                Ref: WebAppLaunchConfig
+                Ref: MyLaunchTemplate
             MinSize: '4'
             MaxSize: '6'
             TargetGroupARNs:
