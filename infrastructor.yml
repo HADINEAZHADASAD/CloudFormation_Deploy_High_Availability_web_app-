@@ -233,8 +233,8 @@ Resources:
                 ToPort: 65535
                 CidrIp: 0.0.0.0/0
 
-    WebAppLaunchConfig: 
-        Type: AWS::AutoScaling::LaunchConfiguration
+    MyLaunchTemplate: 
+        Type: AWS::EC2::LaunchTemplate
         Properties:
             UserData:
                 Fn::Base64: !Sub |
