@@ -36,6 +36,9 @@ Parameters:
     Type: String
     AllowedValues: [t2.medium, t3.small, t3.nano, t3.micro, t3.small, t3.medium, t3.large, t3.xlarge, t3.2xlarge]
 
+  MyLaunchTemplateVersionNumber:  
+    Type: String
+    Default: 1
 
 Resources:
   VPC:
@@ -46,6 +49,18 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref EnvironmentName
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags:
+        - Key: name
+          Value: !Ref EnvironmentName
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
 
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
@@ -90,14 +105,7 @@ Resources:
       Tags: 
         - Key: Name
           Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
-  InternetGateway:
-    Type: AWS::EC2::InternetGateway
-
-  InternetGatewayAttachment:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref VPC
-      InternetGatewayId: !Ref InternetGateway
+  
 
   NatGateway1EIP:
     Type: AWS::EC2::EIP
@@ -232,7 +240,7 @@ Resources:
 
   MyWebAppLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
-    Properties:
+    Properties: 
       LaunchTemplateData:
         UserData:
           Fn::Base64: !Sub |
@@ -242,14 +250,15 @@ Resources:
             systemctl start apache2.service
             cd /var/www/html
             echo "Udacity Demo Web Server Up and Running!" > index.html
-      ImageId: ami-03f65b8614a860c29
-      SecurityGroups:
-        - Ref: WebServerSecGroup
-      InstanceType: !Ref 'InstanceType'
-      BlockDeviceMappings:
+        ImageId: ami-03f65b8614a860c29
+        SecurityGroupIds:
+          - Ref: WebServerSecGroup
+        InstanceType: t3.medium
+        BlockDeviceMappings:
         - DeviceName: "/dev/sdk"
           Ebs:
-            VolumeSize: '10' #10GB
+            VolumeSize: '10'
+
   WebAppTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -269,8 +278,9 @@ Resources:
       VPCZoneIdentifier:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
-      LaunchConfigurationName:
-        Ref: MyWebAppLaunchTemplate
+      LaunchTemplate:
+        LaunchTemplateId: !Ref MyWebAppLaunchTemplate
+        Version: !Ref MyLaunchTemplateVersionNumber
       MinSize: '4'
       MaxSize: '6'
       TargetGroupARNs:
