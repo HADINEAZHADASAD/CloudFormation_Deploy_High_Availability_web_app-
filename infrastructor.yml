@@ -1,5 +1,5 @@
 Description: >
-     Udagram Project
+    Mehmet Incefidan / Udagram Project
 
 Parameters:
 
@@ -196,7 +196,6 @@ Resources:
         Properties:
             RouteTableId: !Ref PrivateRouteTable2
             SubnetId: !Ref PrivateSubnet2
-   
     LoadBalancerSecGroup:
             Type: AWS::EC2::SecurityGroup
             Properties:
@@ -233,24 +232,26 @@ Resources:
                 ToPort: 65535
                 CidrIp: 0.0.0.0/0
 
-     MyLaunchTemplate: 
+    MyWebAppLaunchTemplate:
         Type: AWS::EC2::LaunchTemplate
-        Properties:
-            LaunchTemplateName: MyLaunchTemplate
+        Properties: 
+            LaunchTemplateData:
                 UserData:
                     Fn::Base64: !Sub |
                         #!/bin/bash
-                        sudo apt-get update -y
-                        sudo apt-get install apache2 -y
-                        sudo systemctl start apache2.service 
-                ImageId: ami-03f65b8614a860c29
-                SecurityGroupIds:
-                -   Ref: WebServerSecGroup
-                InstanceType: !Ref 'InstanceType'
-                BlockDeviceMappings:
-                -   DeviceName: "/dev/sdk"
-                    Ebs:
-                        VolumeSize: '10' #10GB
+                        apt-get update -y
+                        apt-get install apache2 -y
+                        systemctl start apache2.service
+                        cd /var/www/html
+                        echo "Udacity Demo Web Server Up and Running!" > index.html
+            ImageId: ami-03f65b8614a860c29
+            SecurityGroups:
+            -   Ref: WebServerSecGroup
+            InstanceType: !Ref 'InstanceType'
+            BlockDeviceMappings:
+            -   DeviceName: "/dev/sdk"
+                Ebs:
+                    VolumeSize: '10' #10GB
 
     WebAppTargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -272,7 +273,7 @@ Resources:
             - !Ref PrivateSubnet1
             - !Ref PrivateSubnet2 
             LaunchConfigurationName:
-                Ref: MyLaunchTemplate
+                Ref: WebAppLaunchConfig
             MinSize: '4'
             MaxSize: '6'
             TargetGroupARNs:
