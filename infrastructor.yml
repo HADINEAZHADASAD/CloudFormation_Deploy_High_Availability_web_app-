@@ -1,5 +1,5 @@
 Description: >
-    Mehmet Incefidan / Udagram Project
+    Udagram Project
 
 Parameters:
 
@@ -44,55 +44,55 @@ Resources:
     VPC:
         Type: AWS::EC2::VPC
         Properties:
-          CidrBlock: !Ref VpcCIDR
-          EnableDnsHostnames: true
-          Tags:
-              - Key: Name
-                Value: !Ref EnvironmentName
+            CidrBlock: !Ref VpcCIDR
+            EnableDnsHostnames: true
+            Tags:
+                - Key: Name
+                    Value: !Ref EnvironmentName
 
     PrivateSubnet1:
         Type: AWS::EC2::Subnet
         Properties:
-          VpcId: !Ref VPC 
-          AvailabilityZone: !Select [ 0, !GetAZs '' ]
-          CidrBlock: !Ref PrivateSubnet1CIDR
-          MapPublicIpOnLaunch: false
-          Tags: 
-              - Key: Name
-                Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+            VpcId: !Ref VPC 
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnet1CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name
+                    Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
 
     PrivateSubnet2:
         Type: AWS::EC2::Subnet
         Properties:
-          VpcId: !Ref VPC
-          AvailabilityZone: !Select [ 1, !GetAZs '' ]
-          CidrBlock: !Ref PrivateSubnet2CIDR
-          MapPublicIpOnLaunch: false
-          Tags: 
-              - Key: Name
-                Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
-    
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref PrivateSubnet2CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name
+                    Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+        
     PublicSubnet1:
         Type: AWS::EC2::Subnet
         Properties:
-          VpcId: !Ref VPC 
-          AvailabilityZone: !Select [ 0, !GetAZs '' ]
-          CidrBlock: !Ref PublicSubnet1CIDR
-          MapPublicIpOnLaunch: false
-          Tags: 
-              - Key: Name
-                Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+            VpcId: !Ref VPC 
+            AvailabilityZone: !Select [ 0, !GetAZs '' ]
+            CidrBlock: !Ref PublicSubnet1CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name
+                    Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
 
     PublicSubnet2:
         Type: AWS::EC2::Subnet
         Properties:
-          VpcId: !Ref VPC
-          AvailabilityZone: !Select [ 1, !GetAZs '' ]
-          CidrBlock: !Ref PublicSubnet2CIDR
-          MapPublicIpOnLaunch: false
-          Tags: 
-              - Key: Name
-                Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+            VpcId: !Ref VPC
+            AvailabilityZone: !Select [ 1, !GetAZs '' ]
+            CidrBlock: !Ref PublicSubnet2CIDR
+            MapPublicIpOnLaunch: false
+            Tags: 
+                - Key: Name
+                    Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
 
     InternetGateway: 
         Type: AWS::EC2::InternetGateway
@@ -100,8 +100,8 @@ Resources:
     InternetGatewayAttachment:
         Type:  AWS::EC2::VPCGatewayAttachment 
         Properties: 
-          VpcId: !Ref VPC 
-          InternetGatewayId: !Ref InternetGateway
+            VpcId: !Ref VPC 
+            InternetGatewayId: !Ref InternetGateway
 
     NatGateway1EIP:
         Type: AWS::EC2::EIP
@@ -231,26 +231,27 @@ Resources:
                 FromPort: 0
                 ToPort: 65535
                 CidrIp: 0.0.0.0/0
-MyWebAppLaunchTemplate:
-    Type: AWS::EC2::LaunchTemplate
-    Properties: 
-        LaunchTemplateData:
-            UserData:
-                Fn::Base64: !Sub |
-                    #!/bin/bash
-                    apt-get update -y
-                    apt-get install apache2 -y
-                    systemctl start apache2.service
-                    cd /var/www/html
+
+    MyWebAppLaunchTemplate:
+        Type: AWS::EC2::LaunchTemplate
+        Properties: 
+            LaunchTemplateData:
+                UserData:
+                    Fn::Base64: !Sub |
+                        #!/bin/bash
+                        apt-get update -y
+                        apt-get install apache2 -y
+                        systemctl start apache2.service
+                        cd /var/www/html
                         echo "Udacity Demo Web Server Up and Running!" > index.html
             ImageId: ami-03f65b8614a860c29
-            SecurityGroupIds:
-                - Ref: WebServerSecGroup
+            SecurityGroups:
+            -   Ref: WebServerSecGroup
             InstanceType: !Ref 'InstanceType'
             BlockDeviceMappings:
-            - DeviceName: "/dev/sdk"
-              Ebs:
-                VolumeSize: '10'
+            -   DeviceName: "/dev/sdk"
+                Ebs:
+                    VolumeSize: '10' #10GB
 
     WebAppTargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
