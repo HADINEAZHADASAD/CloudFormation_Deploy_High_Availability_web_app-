@@ -231,27 +231,26 @@ Resources:
                 FromPort: 0
                 ToPort: 65535
                 CidrIp: 0.0.0.0/0
-
-    MyWebAppLaunchTemplate:
-        Type: AWS::EC2::LaunchTemplate
-        Properties: 
-            LaunchTemplateData:
-                UserData:
-                    Fn::Base64: !Sub |
-                        #!/bin/bash
-                        apt-get update -y
-                        apt-get install apache2 -y
-                        systemctl start apache2.service
-                        cd /var/www/html
+MyWebAppLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+        LaunchTemplateData:
+            UserData:
+                Fn::Base64: !Sub |
+                    #!/bin/bash
+                    apt-get update -y
+                    apt-get install apache2 -y
+                    systemctl start apache2.service
+                    cd /var/www/html
                         echo "Udacity Demo Web Server Up and Running!" > index.html
-                ImageId: ami-03f65b8614a860c29
-                SecurityGroupIds:
-                    - Ref: WebServerSecGroup
-                InstanceType: !Ref 'InstanceType'
-                BlockDeviceMappings:
-                    - DeviceName: "/dev/sdk"
-                      Ebs:
-                        VolumeSize: '10' #10GB
+            ImageId: ami-03f65b8614a860c29
+            SecurityGroupIds:
+                - Ref: WebServerSecGroup
+            InstanceType: !Ref 'InstanceType'
+            BlockDeviceMappings:
+            - DeviceName: "/dev/sdk"
+              Ebs:
+                VolumeSize: '10'
 
     WebAppTargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
