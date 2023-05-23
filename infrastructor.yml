@@ -244,14 +244,14 @@ Resources:
                         systemctl start apache2.service
                         cd /var/www/html
                         echo "Udacity Demo Web Server Up and Running!" > index.html
-            ImageId: ami-03f65b8614a860c29
-            SecurityGroups:
-            -   Ref: WebServerSecGroup
-            InstanceType: !Ref 'InstanceType'
-            BlockDeviceMappings:
-            -   DeviceName: "/dev/sdk"
-                Ebs:
-                    VolumeSize: '10' #10GB
+                ImageId: ami-03f65b8614a860c29
+                SecurityGroups:
+                    - Ref: WebServerSecGroup
+                InstanceType: !Ref 'InstanceType'
+                BlockDeviceMappings:
+                    - DeviceName: "/dev/sdk"
+                      Ebs:
+                        VolumeSize: '10' #10GB
 
     WebAppTargetGroup:
         Type: AWS::ElasticLoadBalancingV2::TargetGroup
